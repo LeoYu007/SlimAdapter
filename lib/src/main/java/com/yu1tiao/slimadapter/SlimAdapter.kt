@@ -21,7 +21,7 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
      * key: viewType (实际上直接使用的layoutId作为viewType)    value: [ViewInjector]
      */
     private val viewInjectors by lazy { SparseArray<ViewInjector<T>>() }
-    private var injectorFinder: InjectorFinder? = null
+    protected open var injectorFinder: InjectorFinder? = null
     private var onItemClickListener: OnItemClickListener? = null
     private var onItemLongClickListener: OnItemLongClickListener? = null
 
@@ -49,8 +49,6 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
         // 这里viewType就是layoutId
         val itemView = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         val holder = ViewHolder(itemView)
-        setupItemClickListener(holder)
-        setupItemLongClickListener(holder)
         return holder
     }
 
@@ -60,19 +58,20 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
         requireNotNull(injector) {
             "viewType出错，注册多个ViewInjector时，必须注册injectorFinder并且返回正确的layoutId"
         }
+
+        setupItemClickListener(holder, position)
+        setupItemLongClickListener(holder, position)
         injector.bind(holder, getItem(position), position)
     }
 
-    private fun setupItemClickListener(viewHolder: ViewHolder) {
+    private fun setupItemClickListener(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.setOnClickListener {
-            val position = viewHolder.layoutPosition
             onItemClickListener?.invoke(position, mDataSet[position] as Any)
         }
     }
 
-    private fun setupItemLongClickListener(viewHolder: ViewHolder) {
+    private fun setupItemLongClickListener(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.setOnLongClickListener {
-            val position = viewHolder.layoutPosition
             onItemLongClickListener?.invoke(position, mDataSet[position] as Any)
             true
         }

@@ -1,27 +1,70 @@
 package com.yu1tiao.slimadapter.sample
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.yu1tiao.slimadapter.SlimAdapter
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.yu1tiao.slimadapter.*
+import com.yu1tiao.slimadapter.core.ViewHolder
+import com.yu1tiao.slimadapter.core.ViewInjector
+import com.yu1tiao.slimadapter.sample.entity.OnePiece
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+class MainActivity : BaseActivity() {
+    private lateinit var adapter: ConcatAdapter
+    private lateinit var slimAdapter: SlimAdapter<OnePiece>
 
+    override fun initPage() {
+        loadData()
+        slimAdapter.addAll(data)
+    }
 
-        SlimAdapter<Any>().apply {
-            register(R.layout.activity_main) { holder, item, position ->
-
+    override fun createAdapter(): RecyclerView.Adapter<out RecyclerView.ViewHolder> {
+        slimAdapter = SlimAdapter<OnePiece>().apply {
+            register(R.layout.item_normal) { holder, item, _ ->
+                bindData2View(holder, item)
             }
-            register(R.layout.activity_main) { holder, item, position ->
-
+            register(R.layout.item_big) { holder, item, _ ->
+                bindData2View(holder, item)
             }
-            injectorFinder { item, position, itemCount -> R.layout.activity_main }
 
-            itemClickListener { index, item ->
-
+            injectorFinder { item, _, _ ->
+                if ((item as OnePiece).isBigType) R.layout.item_big else R.layout.item_normal
+            }
+            itemClickListener { index, _ ->
+                showToast("click position : $index")
+            }
+            itemLongClickListener { index, _ ->
+                remove(index)
             }
         }
+        adapter = ConcatAdapter()
+        adapter.addAdapter(slimAdapter)
+        adapter.apply {
+            header(
+                listOf(
+                    object : ViewInjector<Any>(R.layout.item_header) {
+                        override fun bind(holder: ViewHolder, item: Any, position: Int) {
+
+                        }
+                    }
+                )
+            )
+            footer(
+                listOf(
+                    object : ViewInjector<Any>(R.layout.item_footer) {
+                        override fun bind(holder: ViewHolder, item: Any, position: Int) {
+
+                        }
+                    }
+                )
+            )
+        }
+        adapter.setHeaderData(listOf(1, 2))
+        adapter.setFooterData(listOf(1))
+        return adapter
+    }
+
+    private fun bindData2View(holder: ViewHolder, item: OnePiece) {
+        holder.setText(R.id.tvDesc, item.desc)
+        holder.getImageView(R.id.ivImage)?.load(item.imageRes)
     }
 }
