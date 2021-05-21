@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.util.isNotEmpty
 import com.yu1tiao.slimadapter.core.*
 import com.yu1tiao.slimadapter.diff.DefaultDiffCallback
-import com.yu1tiao.slimadapter.diff.LiteDiffUtil
+import com.yu1tiao.slimadapter.diff.SlimDiffUtil
 
 
 /**
@@ -116,7 +116,7 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
         this.onItemLongClickListener = listener
     }
 
-    fun autoDiff(diffCallback: LiteDiffUtil.Callback? = DefaultDiffCallback()) {
+    fun autoDiff(diffCallback: SlimDiffUtil.Callback? = DefaultDiffCallback()) {
         this.diffCallback = diffCallback
     }
 }

@@ -3,8 +3,7 @@ package com.yu1tiao.slimadapter.core
 import androidx.annotation.IntRange
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.yu1tiao.slimadapter.diff.LiteDiffUtil
-import com.yu1tiao.slimadapter.diff.LiteListUpdateCallback
+import com.yu1tiao.slimadapter.diff.SlimDiffUtil
 import me.yuu.liteadapter.core.DataOperator
 
 
@@ -19,7 +18,7 @@ abstract class AbsAdapter<T> : RecyclerView.Adapter<ViewHolder>(), DataOperator<
 
     @JvmField
     protected var mDataSet: MutableList<T> = ArrayList()
-    protected var diffCallback: LiteDiffUtil.Callback? = null
+    protected var diffCallback: SlimDiffUtil.Callback? = null
 
     fun getDataSet(): List<T> {
         return mDataSet
@@ -37,9 +36,9 @@ abstract class AbsAdapter<T> : RecyclerView.Adapter<ViewHolder>(), DataOperator<
 
     override fun updateData(items: List<T>) {
         if (diffCallback != null && mDataSet.isNotEmpty()) {
-            val diffResult = DiffUtil.calculateDiff(LiteDiffUtil(mDataSet, items, diffCallback!!))
+            val diffResult = DiffUtil.calculateDiff(SlimDiffUtil(mDataSet, items, diffCallback!!))
             mDataSet = ArrayList(items)
-            diffResult.dispatchUpdatesTo(LiteListUpdateCallback(this))
+            diffResult.dispatchUpdatesTo(this)
         } else {
             mDataSet.clear()
             mDataSet.addAll(items)
