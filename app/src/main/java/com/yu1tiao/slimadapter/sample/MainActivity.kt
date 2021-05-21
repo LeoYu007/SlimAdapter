@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        SlimAdapter<String>().apply {
+        SlimAdapter<Any>().apply {
             register(R.layout.activity_main) { holder, item, position ->
 
             }

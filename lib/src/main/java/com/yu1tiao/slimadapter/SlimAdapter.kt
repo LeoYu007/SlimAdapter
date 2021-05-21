@@ -21,7 +21,7 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
      * key: viewType (实际上直接使用的layoutId作为viewType)    value: [ViewInjector]
      */
     private val viewInjectors by lazy { SparseArray<ViewInjector<T>>() }
-    private var injectorFinder: InjectorFinder<T>? = null
+    private var injectorFinder: InjectorFinder? = null
     private var onItemClickListener: OnItemClickListener? = null
     private var onItemLongClickListener: OnItemLongClickListener? = null
 
@@ -39,7 +39,7 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
             require(injectorFinder != null) {
                 "Multiple view types are registered. You must set a injectorFinder"
             }
-            return injectorFinder!!.layoutId(getItem(position), position, itemCount)
+            return injectorFinder!!.layoutId(getItem(position)!!, position, itemCount)
         }
 
         return viewInjectors.keyAt(0)
@@ -96,13 +96,13 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
         })
     }
 
-    fun injectorFinder(finder: InjectorFinder<T>) {
+    fun injectorFinder(finder: InjectorFinder) {
         this.injectorFinder = finder
     }
 
-    fun injectorFinder(finder: (item: T, position: Int, itemCount: Int) -> Int) {
-        this.injectorFinder = object : InjectorFinder<T> {
-            override fun layoutId(item: T, position: Int, itemCount: Int): Int {
+    fun injectorFinder(finder: (item: Any, position: Int, itemCount: Int) -> Int) {
+        this.injectorFinder = object : InjectorFinder {
+            override fun layoutId(item: Any, position: Int, itemCount: Int): Int {
                 return finder(item, position, itemCount)
             }
         }

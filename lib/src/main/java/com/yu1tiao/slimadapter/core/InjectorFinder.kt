@@ -6,9 +6,9 @@ package com.yu1tiao.slimadapter.core
  * @author yu
  * @date 2018/1/11
  */
-interface InjectorFinder<T> {
+interface InjectorFinder {
     /**
      * @return layoutId 返回ViewInjector的layoutId
      */
-    fun layoutId(item: T, position: Int, itemCount: Int): Int
+    fun layoutId(item: Any, position: Int, itemCount: Int): Int
 }
