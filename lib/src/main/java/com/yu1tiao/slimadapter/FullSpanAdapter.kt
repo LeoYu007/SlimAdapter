@@ -17,6 +17,7 @@ import com.yu1tiao.slimadapter.core.ViewHolder
  */
 open class FullSpanAdapter : AbsAdapter<View>() {
     private var mOrientation = 0
+    var isAttach2RecyclerView = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         getItem(viewType).apply {
@@ -33,8 +34,14 @@ open class FullSpanAdapter : AbsAdapter<View>() {
         return position
     }
 
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        isAttach2RecyclerView = false
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
+
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
+        isAttach2RecyclerView = true
         initOrientation(recyclerView.layoutManager)
         setSpanSizeLookup4Grid(recyclerView)
     }

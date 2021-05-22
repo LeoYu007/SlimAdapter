@@ -94,4 +94,11 @@ abstract class AbsAdapter<T> : RecyclerView.Adapter<ViewHolder>(), DataOperator<
         notifyItemChanged(index)
     }
 
+    fun refreshData(notify: Boolean = true, block: (MutableList<T>) -> Unit) {
+        block(mDataSet)
+        if (notify) {
+            notifyDataSetChanged()
+        }
+    }
+
 }
