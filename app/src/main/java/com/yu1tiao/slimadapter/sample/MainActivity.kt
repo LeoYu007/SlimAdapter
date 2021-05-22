@@ -1,11 +1,13 @@
 package com.yu1tiao.slimadapter.sample
 
+import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.yu1tiao.slimadapter.*
+import com.yu1tiao.slimadapter.SlimAdapter
+import com.yu1tiao.slimadapter.addFooter
+import com.yu1tiao.slimadapter.addHeader
 import com.yu1tiao.slimadapter.core.ViewHolder
-import com.yu1tiao.slimadapter.core.ViewInjector
 import com.yu1tiao.slimadapter.sample.entity.OnePiece
 
 class MainActivity : BaseActivity() {
@@ -38,28 +40,14 @@ class MainActivity : BaseActivity() {
         }
         adapter = ConcatAdapter()
         adapter.addAdapter(slimAdapter)
+        val header = View.inflate(this, R.layout.item_header, null)
+        val footer = View.inflate(this, R.layout.item_footer, null)
         adapter.apply {
-            header(
-                listOf(
-                    object : ViewInjector<Any>(R.layout.item_header) {
-                        override fun bind(holder: ViewHolder, item: Any, position: Int) {
-
-                        }
-                    }
-                )
-            )
-            footer(
-                listOf(
-                    object : ViewInjector<Any>(R.layout.item_footer) {
-                        override fun bind(holder: ViewHolder, item: Any, position: Int) {
-
-                        }
-                    }
-                )
-            )
+            addHeader(header)
+            addHeader(header)
+            addHeader(header)
+            addFooter(footer)
         }
-        adapter.setHeaderData(listOf(1, 2))
-        adapter.setFooterData(listOf(1))
         return adapter
     }
 

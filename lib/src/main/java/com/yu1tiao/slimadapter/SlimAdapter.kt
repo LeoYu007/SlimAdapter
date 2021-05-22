@@ -48,8 +48,7 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // 这里viewType就是layoutId
         val itemView = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        val holder = ViewHolder(itemView)
-        return holder
+        return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -79,7 +78,7 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    fun register(injector: ViewInjector<T>) {
+    open fun register(injector: ViewInjector<T>) {
         // 直接使用layoutId当做viewType
         viewInjectors.put(injector.layoutId, injector)
     }
