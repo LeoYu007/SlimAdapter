@@ -48,7 +48,11 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // 这里viewType就是layoutId
         val itemView = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return ViewHolder(itemView)
+        val holder = ViewHolder(itemView)
+
+        setupItemClickListener(holder)
+        setupItemLongClickListener(holder)
+        return holder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -58,19 +62,19 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
             "viewType出错，注册多个ViewInjector时，必须注册injectorFinder并且返回正确的layoutId"
         }
 
-        setupItemClickListener(holder, position)
-        setupItemLongClickListener(holder, position)
         injector.bind(holder, getItem(position), position)
     }
 
-    private fun setupItemClickListener(viewHolder: ViewHolder, position: Int) {
+    private fun setupItemClickListener(viewHolder: ViewHolder) {
         viewHolder.itemView.setOnClickListener {
+            val position = viewHolder.bindingAdapterPosition
             onItemClickListener?.invoke(position, mDataSet[position] as Any)
         }
     }
 
-    private fun setupItemLongClickListener(viewHolder: ViewHolder, position: Int) {
+    private fun setupItemLongClickListener(viewHolder: ViewHolder) {
         viewHolder.itemView.setOnLongClickListener {
+            val position = viewHolder.bindingAdapterPosition
             onItemLongClickListener?.invoke(position, mDataSet[position] as Any)
             true
         }

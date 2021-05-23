@@ -40,12 +40,14 @@ class MainActivity : BaseActivity() {
         }
         adapter = ConcatAdapter()
         adapter.addAdapter(slimAdapter)
-        val header = View.inflate(this, R.layout.item_header, null)
+        val header1 = View.inflate(this, R.layout.item_header, null)
+        val header2 = View.inflate(this, R.layout.item_header, null)
+        val header3 = View.inflate(this, R.layout.item_header, null)
         val footer = View.inflate(this, R.layout.item_footer, null)
         adapter.apply {
-            addHeader(header)
-            addHeader(header)
-            addHeader(header)
+            addHeader(header1)
+            addHeader(header2)
+            addHeader(header3)
             addFooter(footer)
         }
         return adapter
