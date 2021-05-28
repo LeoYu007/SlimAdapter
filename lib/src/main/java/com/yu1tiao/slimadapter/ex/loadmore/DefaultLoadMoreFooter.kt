@@ -1,4 +1,4 @@
-package com.yu1tiao.slimadapter.loadmore
+package com.yu1tiao.slimadapter.ex.loadmore
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.yu1tiao.slimadapter.SlimUtil
+import com.yu1tiao.slimadapter.util.SlimUtil
 
 /**
  * @author yu

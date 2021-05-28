@@ -1,15 +1,14 @@
 package com.yu1tiao.slimadapter.sample
 
 import android.view.View
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.yu1tiao.slimadapter.SlimAdapter
-import com.yu1tiao.slimadapter.SlimAdapterEx
+import com.yu1tiao.slimadapter.ex.SlimAdapterEx
 import com.yu1tiao.slimadapter.core.ViewHolder
-import com.yu1tiao.slimadapter.loadmore.DefaultLoadMoreFooter
-import com.yu1tiao.slimadapter.loadmore.LoadMoreListener
-import com.yu1tiao.slimadapter.loadmore.MoreLoader
+import com.yu1tiao.slimadapter.ex.loadmore.DefaultLoadMoreFooter
+import com.yu1tiao.slimadapter.ex.loadmore.LoadMoreListener
+import com.yu1tiao.slimadapter.ex.loadmore.MoreLoader
 import com.yu1tiao.slimadapter.sample.entity.OnePiece
 
 class MainActivity : BaseActivity() {

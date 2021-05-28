@@ -1,4 +1,4 @@
-package com.yu1tiao.slimadapter
+package com.yu1tiao.slimadapter.util
 
 import android.content.Context
 import android.view.View

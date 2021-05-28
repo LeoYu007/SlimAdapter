@@ -1,10 +1,10 @@
-package com.yu1tiao.slimadapter.loadmore
+package com.yu1tiao.slimadapter.ex.loadmore
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.yu1tiao.slimadapter.AttachListener
-import com.yu1tiao.slimadapter.DetachListener
-import com.yu1tiao.slimadapter.SlimUtil
+import com.yu1tiao.slimadapter.ex.AttachListener
+import com.yu1tiao.slimadapter.ex.DetachListener
+import com.yu1tiao.slimadapter.util.SlimUtil
 import java.lang.ref.WeakReference
 
 /**

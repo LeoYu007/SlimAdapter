@@ -1,14 +1,17 @@
-package com.yu1tiao.slimadapter
+package com.yu1tiao.slimadapter.ex
 
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yu1tiao.slimadapter.loadmore.ILoadMoreFooter
-import com.yu1tiao.slimadapter.loadmore.MoreLoader
+import com.yu1tiao.slimadapter.SlimAdapter
+import com.yu1tiao.slimadapter.ex.loadmore.MoreLoader
 import me.yuu.liteadapter.core.DataOperator
 
+/**
+ * 支持header、footer、empty
+ */
 class SlimAdapterEx<T>(
     val contentAdapter: SlimAdapter<T>,
     private val headers: Array<View>? = null,

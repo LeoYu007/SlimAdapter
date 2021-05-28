@@ -1,4 +1,4 @@
-package com.yu1tiao.slimadapter
+package com.yu1tiao.slimadapter.ex
 
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.yu1tiao.slimadapter.core.AbsAdapter
 import com.yu1tiao.slimadapter.core.ViewHolder
+import com.yu1tiao.slimadapter.util.SlimUtil
 
 
 interface AttachListener {

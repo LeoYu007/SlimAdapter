@@ -1,4 +1,4 @@
-package com.yu1tiao.slimadapter.loadmore
+package com.yu1tiao.slimadapter.ex.loadmore
 
 import android.view.View
 
