@@ -10,14 +10,24 @@ import com.yu1tiao.slimadapter.core.AbsAdapter
 import com.yu1tiao.slimadapter.core.ViewHolder
 
 
+interface AttachListener {
+    fun onAttachedToRecyclerView(recyclerView: RecyclerView)
+}
+
+interface DetachListener {
+    fun onDetachedFromRecyclerView(recyclerView: RecyclerView)
+}
+
 /**
  * @author yuli
  * @date 2021/5/20
  * @description SlimAdapter
  */
 open class FullSpanAdapter : AbsAdapter<View>() {
+
     private var mOrientation = 0
-    var isAttach2RecyclerView = false
+    var attachListener: AttachListener? = null
+    var detachListener: DetachListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         getItem(viewType).apply {
@@ -35,13 +45,13 @@ open class FullSpanAdapter : AbsAdapter<View>() {
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        isAttach2RecyclerView = false
+        detachListener?.onDetachedFromRecyclerView(recyclerView)
         super.onDetachedFromRecyclerView(recyclerView)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        isAttach2RecyclerView = true
+        attachListener?.onAttachedToRecyclerView(recyclerView)
         initOrientation(recyclerView.layoutManager)
         setSpanSizeLookup4Grid(recyclerView)
     }
@@ -80,3 +90,4 @@ open class FullSpanAdapter : AbsAdapter<View>() {
 
 class HeaderAdapter : FullSpanAdapter()
 class FooterAdapter : FullSpanAdapter()
+class EmptyAdapter : FullSpanAdapter()

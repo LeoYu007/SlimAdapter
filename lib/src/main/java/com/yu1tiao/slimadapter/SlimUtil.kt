@@ -14,8 +14,7 @@ internal object SlimUtil {
     }
 
     fun findLastCompletelyVisibleItemPosition(layoutManager: RecyclerView.LayoutManager): Int {
-        val lastPosition: Int
-        lastPosition = when (layoutManager) {
+        return when (layoutManager) {
             is GridLayoutManager -> {
                 layoutManager.findLastCompletelyVisibleItemPosition()
             }
@@ -28,7 +27,6 @@ internal object SlimUtil {
                 (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
             }
         }
-        return lastPosition
     }
 
     private fun findMax(lastPositions: IntArray): Int {

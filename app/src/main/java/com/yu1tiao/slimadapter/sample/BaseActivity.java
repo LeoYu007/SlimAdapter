@@ -20,7 +20,6 @@ import java.util.List;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected final List<OnePiece> data = new ArrayList<>();
     protected RecyclerView recyclerView;
 
     @Override
@@ -56,7 +55,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract RecyclerView.Adapter<? extends RecyclerView.ViewHolder> createAdapter();
 
-    protected void loadData() {
+    protected List<OnePiece> loadData() {
+        List<OnePiece> data =new ArrayList<>();
         data.add(new OnePiece("我是要做海贼王的男人", R.mipmap.ic_lufei, false));
         data.add(new OnePiece("路痴路痴路痴", R.mipmap.ic_suolong, false));
         data.add(new OnePiece("haha~~", R.mipmap.ic_big2, true));
@@ -67,12 +67,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         data.add(new OnePiece("haha~", R.mipmap.ic_big1, true));
         data.add(new OnePiece("色河童色河童色河童", R.mipmap.ic_shanzhi, false));
         data.add(new OnePiece("haha~", R.mipmap.ic_big1, true));
-        data.add(new OnePiece("我是要做海贼王的男人", R.mipmap.ic_lufei, false));
-        data.add(new OnePiece("haha~~", R.mipmap.ic_big2, true));
-        data.add(new OnePiece("路痴路痴路痴", R.mipmap.ic_suolong, false));
-        data.add(new OnePiece("haha~~~", R.mipmap.ic_big3, true));
-        data.add(new OnePiece("我是要做海贼王的男人", R.mipmap.ic_lufei, false));
-        data.add(new OnePiece("路痴路痴路痴", R.mipmap.ic_suolong, false));
-        data.add(new OnePiece("色河童色河童色河童", R.mipmap.ic_shanzhi, false));
+        return data;
     }
 }

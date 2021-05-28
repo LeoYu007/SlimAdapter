@@ -5,22 +5,32 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.yu1tiao.slimadapter.SlimAdapter
-import com.yu1tiao.slimadapter.addFooter
-import com.yu1tiao.slimadapter.addHeader
+import com.yu1tiao.slimadapter.SlimAdapterEx
 import com.yu1tiao.slimadapter.core.ViewHolder
+import com.yu1tiao.slimadapter.loadmore.DefaultLoadMoreFooter
+import com.yu1tiao.slimadapter.loadmore.LoadMoreListener
+import com.yu1tiao.slimadapter.loadmore.MoreLoader
 import com.yu1tiao.slimadapter.sample.entity.OnePiece
 
 class MainActivity : BaseActivity() {
-    private lateinit var adapter: ConcatAdapter
-    private lateinit var slimAdapter: SlimAdapter<OnePiece>
+    private lateinit var adapterEx: SlimAdapterEx<OnePiece>
 
     override fun initPage() {
-        loadData()
-        slimAdapter.addAll(data)
+        findViewById<View>(R.id.btn_clear).setOnClickListener {
+            adapterEx.clear()
+        }
+        findViewById<View>(R.id.btn_refresh).setOnClickListener {
+            val data = loadData()
+            adapterEx.updateData(data)
+            adapterEx.loadMoreCompleted()
+        }
+
+        val data = loadData()
+        adapterEx.updateData(data)
     }
 
     override fun createAdapter(): RecyclerView.Adapter<out RecyclerView.ViewHolder> {
-        slimAdapter = SlimAdapter<OnePiece>().apply {
+        val slimAdapter = SlimAdapter<OnePiece>().apply {
             register(R.layout.item_normal) { holder, item, _ ->
                 bindData2View(holder, item)
             }
@@ -38,19 +48,42 @@ class MainActivity : BaseActivity() {
                 remove(index)
             }
         }
-        adapter = ConcatAdapter()
-        adapter.addAdapter(slimAdapter)
+        val empty = View.inflate(this, R.layout.empty_view, null)
         val header1 = View.inflate(this, R.layout.item_header, null)
         val header2 = View.inflate(this, R.layout.item_header, null)
-        val header3 = View.inflate(this, R.layout.item_header, null)
         val footer = View.inflate(this, R.layout.item_footer, null)
-        adapter.apply {
-            addHeader(header1)
-            addHeader(header2)
-            addHeader(header3)
-            addFooter(footer)
-        }
-        return adapter
+
+        adapterEx = SlimAdapterEx(
+            slimAdapter,
+            headers = arrayOf(header1, header2),
+//            footers = arrayOf(footer),
+            emptyView = empty,
+            moreLoader = MoreLoader(object : LoadMoreListener {
+                override fun onLoadMore() {
+                    loadMore()
+                }
+            }, DefaultLoadMoreFooter(this))
+        )
+
+        return adapterEx.buildAdapter()
+    }
+
+    private fun loadMore() {
+        recyclerView.postDelayed({
+            when ((System.currentTimeMillis() % 5).toInt()) {
+                in 1..2 -> {
+                    adapterEx.loadMoreError()
+                }
+                0 -> {
+                    adapterEx.noMore()
+                }
+                else -> {
+                    val data = loadData()
+                    adapterEx.addAll(data)
+                    adapterEx.loadMoreCompleted()
+                }
+            }
+        }, 1500)
     }
 
     private fun bindData2View(holder: ViewHolder, item: OnePiece) {
