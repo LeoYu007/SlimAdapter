@@ -1,4 +1,4 @@
-package com.yu1tiao.slimadapter.sample
+package com.mathew.slimadapter.sample
 
 import org.junit.Test
 
