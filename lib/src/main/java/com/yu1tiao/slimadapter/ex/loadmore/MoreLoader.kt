@@ -16,7 +16,7 @@ interface LoadMoreListener {
     fun onLoadMore()
 }
 
-class MoreLoader(
+open class MoreLoader(
     private val mLoadMoreListener: LoadMoreListener?,
     private val mLoadMoreFooter: ILoadMoreFooter
 ) : RecyclerView.OnScrollListener(), AttachListener, DetachListener {
@@ -25,8 +25,8 @@ class MoreLoader(
     var enable = true
         set(value) {
             field = value
-            mLoadMoreFooter.status =
-                if (value) ILoadMoreFooter.Status.COMPLETED else ILoadMoreFooter.Status.DISABLE
+            mLoadMoreFooter.status = if (value) ILoadMoreFooter.Status.COMPLETED
+            else ILoadMoreFooter.Status.DISABLE
         }
 
     @Volatile

@@ -22,7 +22,7 @@ interface DetachListener {
 /**
  * @author yuli
  * @date 2021/5/20
- * @description SlimAdapter
+ * @description item占满整行的adapter，用于header、footer、empty
  */
 open class FullSpanAdapter : AbsAdapter<View>() {
 

@@ -1,10 +1,11 @@
 package com.yu1tiao.slimadapter.sample
 
+import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.yu1tiao.slimadapter.SlimAdapter
-import com.yu1tiao.slimadapter.ex.SlimAdapterEx
+import com.yu1tiao.slimadapter.ex.SlimAdapterHelper
 import com.yu1tiao.slimadapter.core.ViewHolder
 import com.yu1tiao.slimadapter.ex.loadmore.DefaultLoadMoreFooter
 import com.yu1tiao.slimadapter.ex.loadmore.LoadMoreListener
@@ -12,20 +13,22 @@ import com.yu1tiao.slimadapter.ex.loadmore.MoreLoader
 import com.yu1tiao.slimadapter.sample.entity.OnePiece
 
 class MainActivity : BaseActivity() {
-    private lateinit var adapterEx: SlimAdapterEx<OnePiece>
+    private lateinit var adapterHelper: SlimAdapterHelper<OnePiece>
 
-    override fun initPage() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
         findViewById<View>(R.id.btn_clear).setOnClickListener {
-            adapterEx.clear()
+            adapterHelper.clear()
         }
         findViewById<View>(R.id.btn_refresh).setOnClickListener {
             val data = loadData()
-            adapterEx.updateData(data)
-            adapterEx.loadMoreCompleted()
+            adapterHelper.updateData(data)
+            adapterHelper.loadMoreCompleted()
         }
 
         val data = loadData()
-        adapterEx.updateData(data)
+        adapterHelper.updateData(data)
     }
 
     override fun createAdapter(): RecyclerView.Adapter<out RecyclerView.ViewHolder> {
@@ -52,7 +55,8 @@ class MainActivity : BaseActivity() {
         val header2 = View.inflate(this, R.layout.item_header, null)
         val footer = View.inflate(this, R.layout.item_footer, null)
 
-        adapterEx = SlimAdapterEx(
+        // footer和loadMore不能同时出现，会有冲突
+        adapterHelper = SlimAdapterHelper(
             slimAdapter,
             headers = arrayOf(header1, header2),
 //            footers = arrayOf(footer),
@@ -64,22 +68,22 @@ class MainActivity : BaseActivity() {
             }, DefaultLoadMoreFooter(this))
         )
 
-        return adapterEx.buildAdapter()
+        return adapterHelper.build()
     }
 
     private fun loadMore() {
         recyclerView.postDelayed({
             when ((System.currentTimeMillis() % 5).toInt()) {
                 in 1..2 -> {
-                    adapterEx.loadMoreError()
+                    adapterHelper.loadMoreError()
                 }
                 0 -> {
-                    adapterEx.noMore()
+                    adapterHelper.noMore()
                 }
                 else -> {
                     val data = loadData()
-                    adapterEx.addAll(data)
-                    adapterEx.loadMoreCompleted()
+                    adapterHelper.addAll(data)
+                    adapterHelper.loadMoreCompleted()
                 }
             }
         }, 1500)

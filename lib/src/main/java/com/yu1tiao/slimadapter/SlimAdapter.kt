@@ -21,9 +21,9 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
      * key: viewType (实际上直接使用的layoutId作为viewType)    value: [ViewInjector]
      */
     private val viewInjectors by lazy { SparseArray<ViewInjector<T>>() }
-    protected open var injectorFinder: InjectorFinder? = null
     private var onItemClickListener: OnItemClickListener? = null
     private var onItemLongClickListener: OnItemLongClickListener? = null
+    protected open var injectorFinder: InjectorFinder? = null
 
     override fun getItemViewType(position: Int): Int {
         require(viewInjectors.isNotEmpty()) {

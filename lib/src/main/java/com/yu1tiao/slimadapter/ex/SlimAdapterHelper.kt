@@ -10,15 +10,16 @@ import com.yu1tiao.slimadapter.ex.loadmore.MoreLoader
 import me.yuu.liteadapter.core.DataOperator
 
 /**
- * 支持header、footer、empty
+ * 为了一个普通的adapter增加 header、footer、empty、loadMore的功能
+ * 实际上是构建了一个ConcatAdapter，header、footer、empty分别是3个不同的子adapter
  */
-class SlimAdapterEx<T>(
+class SlimAdapterHelper<T>(
     val contentAdapter: SlimAdapter<T>,
     private val headers: Array<View>? = null,
     private val footers: Array<View>? = null,
-    val moreLoader: MoreLoader? = null,
+    private val moreLoader: MoreLoader? = null,
     private val emptyView: View? = null,
-    private val emptyViewHeight: Int = ViewGroup.LayoutParams.MATCH_PARENT
+    emptyViewHeight: Int = ViewGroup.LayoutParams.MATCH_PARENT
 ) : DataOperator<T> by contentAdapter {
 
     private lateinit var realAdapter: ConcatAdapter
@@ -45,7 +46,14 @@ class SlimAdapterEx<T>(
         moreLoader?.noMore()
     }
 
-    fun buildAdapter(): ConcatAdapter {
+    /**
+     * 此方法在第一次更新数据后可以选择性调用
+     */
+    fun disableIfNotFullPage() {
+        moreLoader?.disableIfNotFullPage()
+    }
+
+    fun build(): ConcatAdapter {
         if (!footers.isNullOrEmpty() && moreLoader != null) {
             throw RuntimeException("不能同时添加footer和loadMore")
         }
@@ -104,7 +112,7 @@ class SlimAdapterEx<T>(
                         realAdapter.removeAdapter(it)
                     }
                 }
-                moreLoader?.disableIfNotFullPage()
+//                moreLoader?.disableIfNotFullPage()
             }
         })
 

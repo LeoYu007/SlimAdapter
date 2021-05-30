@@ -18,7 +18,7 @@ class DefaultLoadMoreFooter : LinearLayout, ILoadMoreFooter {
 
     private var mState = ILoadMoreFooter.Status.LOADING
     private var mText: TextView? = null
-    private var mProgressBar: ProgressBar? = null
+    private var mProgressBar: View? = null
     var str_no_more = "没有更多了"
     var str_loading = "正在加载..."
     var str_error = "出错啦...点击重试"
@@ -40,7 +40,7 @@ class DefaultLoadMoreFooter : LinearLayout, ILoadMoreFooter {
         orientation = HORIZONTAL
         gravity = Gravity.CENTER
 
-        mProgressBar = ProgressBar(context).apply {
+        mProgressBar = SlimLoadingView(context).apply {
             this.layoutParams = LayoutParams(
                 SlimUtil.dp2px(context, 25f),
                 SlimUtil.dp2px(context, 25f)

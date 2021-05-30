@@ -29,11 +29,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         initView();
         loadData();
-        initPage();
-
     }
 
-    protected abstract void initPage();
 
     protected void initView() {
         recyclerView = findViewById(R.id.recyclerView);
