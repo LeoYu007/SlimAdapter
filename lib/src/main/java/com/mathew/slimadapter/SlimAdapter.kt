@@ -5,10 +5,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.util.isNotEmpty
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mathew.slimadapter.core.*
 import com.mathew.slimadapter.diff.DefaultDiffCallback
 import com.mathew.slimadapter.diff.SlimDiffUtil
 
+
+interface AttachToRecyclerViewListener {
+    fun onAttachedToRecyclerView(recyclerView: RecyclerView)
+    fun onDetachedFromRecyclerView(recyclerView: RecyclerView)
+}
+
+interface AttachToWindowListener {
+    fun onAttachedToWindow(holder: ViewHolder)
+    fun onDetachedFromWindow(holder: ViewHolder)
+}
 
 /**
  * @author yuli
@@ -23,7 +36,16 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
     private val viewInjectors by lazy { SparseArray<ViewInjector<T>>() }
     private var onItemClickListener: OnItemClickListener? = null
     private var onItemLongClickListener: OnItemLongClickListener? = null
-    protected open var injectorFinder: InjectorFinder? = null
+    private var injectorFinder: InjectorFinder? = null
+    private val attachRecyclerViewListener by lazy { arrayListOf<AttachToRecyclerViewListener>() }
+    private val attachWindowListener by lazy { arrayListOf<AttachToWindowListener>() }
+
+    fun addOnAttachRecyclerViewListener(l: AttachToRecyclerViewListener) =
+        attachRecyclerViewListener.add(l)
+
+    fun addOnAttachWindowListener(l: AttachToWindowListener) = attachWindowListener.add(l)
+    fun clearOnAttachWindowListener() = attachWindowListener.clear()
+    fun clearOnAttachRecyclerViewListener() = attachRecyclerViewListener.clear()
 
     override fun getItemViewType(position: Int): Int {
         require(viewInjectors.isNotEmpty()) {
@@ -78,6 +100,36 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
             onItemLongClickListener?.invoke(position, mDataSet[position] as Any)
             true
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        attachRecyclerViewListener.forEach {
+            it.onDetachedFromRecyclerView(recyclerView)
+        }
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        attachRecyclerViewListener.forEach {
+            it.onAttachedToRecyclerView(recyclerView)
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        attachWindowListener.forEach {
+            it.onAttachedToWindow(holder)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        attachWindowListener.forEach {
+            it.onDetachedFromWindow(holder)
+        }
+        super.onViewDetachedFromWindow(holder)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

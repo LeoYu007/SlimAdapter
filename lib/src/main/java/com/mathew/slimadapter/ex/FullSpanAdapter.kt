@@ -2,7 +2,6 @@ package com.mathew.slimadapter.ex
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -11,30 +10,19 @@ import com.mathew.slimadapter.core.ViewHolder
 import com.mathew.slimadapter.util.SlimUtil
 
 
-interface AttachListener {
-    fun onAttachedToRecyclerView(recyclerView: RecyclerView)
-}
-
-interface DetachListener {
-    fun onDetachedFromRecyclerView(recyclerView: RecyclerView)
-}
-
 /**
  * @author yuli
  * @date 2021/5/20
- * @description item占满整行的adapter，用于header、footer、empty
  */
 open class FullSpanAdapter : AbsAdapter<View>() {
 
-    private var mOrientation = 0
-    var attachListener: AttachListener? = null
-    var detachListener: DetachListener? = null
+    private var mOrientation = RecyclerView.VERTICAL
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        getItem(viewType).apply {
+        val view = getItem(viewType).apply {
             layoutParams = SlimUtil.generateLayoutParamsForHeaderAndFooter(mOrientation, this)
         }
-        return ViewHolder(getItem(viewType))
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -45,39 +33,9 @@ open class FullSpanAdapter : AbsAdapter<View>() {
         return position
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        detachListener?.onDetachedFromRecyclerView(recyclerView)
-        super.onDetachedFromRecyclerView(recyclerView)
-    }
-
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        attachListener?.onAttachedToRecyclerView(recyclerView)
         initOrientation(recyclerView.layoutManager)
-        setSpanSizeLookup4Grid(recyclerView)
-    }
-
-    override fun onViewAttachedToWindow(holder: ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        setSpanSizeLookup4StaggeredGrid(holder)
-    }
-
-    private fun setSpanSizeLookup4StaggeredGrid(holder: ViewHolder) {
-        val lp = holder.itemView.layoutParams
-        if (lp is StaggeredGridLayoutManager.LayoutParams) {
-            lp.isFullSpan = true
-        }
-    }
-
-    private fun setSpanSizeLookup4Grid(recyclerView: RecyclerView) {
-        val manager = recyclerView.layoutManager
-        if (manager is GridLayoutManager) {
-            manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(index: Int): Int {
-                    return manager.spanCount
-                }
-            }
-        }
     }
 
     private fun initOrientation(manager: RecyclerView.LayoutManager?) {
@@ -87,8 +45,18 @@ open class FullSpanAdapter : AbsAdapter<View>() {
             mOrientation = manager.orientation
         }
     }
+
 }
 
 class HeaderAdapter : FullSpanAdapter()
 class FooterAdapter : FullSpanAdapter()
-class EmptyAdapter : FullSpanAdapter()
+class EmptyAdapter(private val emptyView: View) : FullSpanAdapter() {
+
+    fun show() {
+        updateData(listOf(emptyView))
+    }
+
+    fun hide() {
+        clear()
+    }
+}

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected RecyclerView.LayoutManager initLayoutManager() {
-        return new LinearLayoutManager(this);
+        return new GridLayoutManager(this, 2);
     }
 
     protected int getLayoutId() {
@@ -53,7 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract RecyclerView.Adapter<? extends RecyclerView.ViewHolder> createAdapter();
 
     protected List<OnePiece> loadData() {
-        List<OnePiece> data =new ArrayList<>();
+        List<OnePiece> data = new ArrayList<>();
         data.add(new OnePiece("我是要做海贼王的男人", R.mipmap.ic_lufei, false));
         data.add(new OnePiece("路痴路痴路痴", R.mipmap.ic_suolong, false));
         data.add(new OnePiece("haha~~", R.mipmap.ic_big2, true));

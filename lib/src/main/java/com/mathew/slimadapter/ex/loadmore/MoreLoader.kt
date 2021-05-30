@@ -2,8 +2,7 @@ package com.mathew.slimadapter.ex.loadmore
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.mathew.slimadapter.ex.AttachListener
-import com.mathew.slimadapter.ex.DetachListener
+import com.mathew.slimadapter.AttachToRecyclerViewListener
 import com.mathew.slimadapter.util.SlimUtil
 import java.lang.ref.WeakReference
 
@@ -19,7 +18,7 @@ interface LoadMoreListener {
 open class MoreLoader(
     private val mLoadMoreListener: LoadMoreListener?,
     private val mLoadMoreFooter: ILoadMoreFooter
-) : RecyclerView.OnScrollListener(), AttachListener, DetachListener {
+) : RecyclerView.OnScrollListener(), AttachToRecyclerViewListener {
 
     @Volatile
     var enable = true

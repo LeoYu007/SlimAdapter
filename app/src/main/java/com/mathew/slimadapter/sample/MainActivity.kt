@@ -54,12 +54,13 @@ class MainActivity : BaseActivity() {
         val header1 = View.inflate(this, R.layout.item_header, null)
         val header2 = View.inflate(this, R.layout.item_header, null)
         val footer = View.inflate(this, R.layout.item_footer, null)
+        val footer2 = View.inflate(this, R.layout.item_footer, null)
 
         // footer和loadMore不能同时出现，会有冲突
         adapterHelper = SlimAdapterHelper(
             slimAdapter,
-            headers = arrayOf(header1, header2),
-//            footers = arrayOf(footer),
+//            headers = arrayOf(header1, header2),
+//            footers = arrayOf(footer, footer2),
             emptyView = empty,
             moreLoader = MoreLoader(object : LoadMoreListener {
                 override fun onLoadMore() {
