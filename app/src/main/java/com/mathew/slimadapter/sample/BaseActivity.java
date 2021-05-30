@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mathew.slimadapter.SlimAdapter;
 import com.mathew.slimadapter.sample.entity.OnePiece;
 
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected RecyclerView.LayoutManager initLayoutManager() {
-        return new GridLayoutManager(this, 2);
+        return new LinearLayoutManager(this);
     }
 
     protected int getLayoutId() {

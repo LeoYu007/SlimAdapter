@@ -18,7 +18,7 @@ import com.mathew.slimadapter.core.ViewHolder
  * 为了一个普通的adapter增加 header、footer、empty、loadMore的功能
  * 实际上是构建了一个ConcatAdapter，header、footer、empty分别是3个不同的子adapter
  */
-class SlimAdapterHelper<T>(
+class SlimAdapterWrapper<T>(
     val contentAdapter: SlimAdapter<T>,
     private val headers: Array<View>? = null,
     private val footers: Array<View>? = null,
@@ -29,6 +29,7 @@ class SlimAdapterHelper<T>(
 
     private lateinit var realAdapter: ConcatAdapter
     private var emptyAdapter: EmptyAdapter? = null
+    private var loadMoreAdapter: LoadMoreAdapter? = null
     private var footerAdapter: FooterAdapter? = null
     private var headerAdapter: HeaderAdapter? = null
 
@@ -39,29 +40,26 @@ class SlimAdapterHelper<T>(
     }
 
     fun loadMoreEnable(enable: Boolean) {
-        moreLoader?.enable = enable
+        loadMoreAdapter?.enable(enable)
     }
 
     fun loadMoreCompleted() {
-        moreLoader?.loadMoreCompleted()
+        loadMoreAdapter?.completed()
     }
 
     fun loadMoreError() {
-        moreLoader?.loadMoreError()
+        loadMoreAdapter?.error()
     }
 
     fun noMore() {
-        moreLoader?.noMore()
+        loadMoreAdapter?.noMore()
     }
 
-    /**
-     * 此方法在第一次更新数据后可以选择性调用
-     */
-    fun disableIfNotFullPage() {
-        moreLoader?.disableIfNotFullPage()
+    fun disableLoadMoreIfNotFullPage() {
+        loadMoreAdapter?.disableLoadMoreIfNotFullPage()
     }
 
-    fun build(): ConcatAdapter {
+    fun create(): ConcatAdapter {
         if (!footers.isNullOrEmpty() && moreLoader != null) {
             throw RuntimeException("不能同时添加footer和loadMore")
         }
@@ -74,46 +72,17 @@ class SlimAdapterHelper<T>(
         if (!footers.isNullOrEmpty()) {
             realAdapter.addFooter(*footers)
         }
-        if (moreLoader != null) {
-            realAdapter.enableLoadMore(moreLoader)
-            contentAdapter.addOnAttachRecyclerViewListener(moreLoader)
-            moreLoader.setItemCountCallback {
-                return@setItemCountCallback realAdapter.itemCount
-            }
-        }
 
-        emptyAdapter = if (emptyView != null) {
-            EmptyAdapter(emptyView)
-        } else {
-            null
-        }
-        emptyAdapter?.let {
-            val emptyIndex = if (headers.isNullOrEmpty()) 0 else 1
-            realAdapter.addAdapter(emptyIndex, it)
-        }
+        realAdapter.emptyView(emptyView)
+        realAdapter.enableLoadMore(moreLoader)
 
-        if (
-            !headers.isNullOrEmpty() || !footers.isNullOrEmpty() ||
-            emptyView != null || moreLoader != null
-        ) {
-            contentAdapter.addOnAttachRecyclerViewListener(object : AttachToRecyclerViewListener {
-                override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-                    setSpanSizeLookup4Grid(recyclerView)
-                }
+        initFullSpanCallback()
+        initEmptyViewSupport()
 
-                override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-                }
-            })
-            contentAdapter.addOnAttachWindowListener(object : AttachToWindowListener {
-                override fun onAttachedToWindow(holder: ViewHolder) {
-                    setSpanSizeLookup4StaggeredGrid(holder)
-                }
+        return realAdapter
+    }
 
-                override fun onDetachedFromWindow(holder: ViewHolder) {
-                }
-            })
-        }
-
+    private fun initEmptyViewSupport() {
         contentAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 Log.i("SlimAdapterEx", "receive onChanged")
@@ -137,17 +106,38 @@ class SlimAdapterHelper<T>(
 
             private fun doIfChange() {
                 if (contentAdapter.itemCount == 0) {
-                    moreLoader?.isEmpty = true
+                    loadMoreAdapter?.setContentEmpty(true)
                     emptyAdapter?.show()
                 } else {
-                    moreLoader?.isEmpty = false
+                    loadMoreAdapter?.setContentEmpty(false)
                     emptyAdapter?.hide()
                 }
-//                moreLoader?.disableIfNotFullPage()
             }
         })
+    }
 
-        return realAdapter
+    private fun initFullSpanCallback() {
+        if (
+            !headers.isNullOrEmpty() || !footers.isNullOrEmpty() ||
+            emptyView != null || moreLoader != null
+        ) {
+            contentAdapter.addOnAttachRecyclerViewListener(object : AttachToRecyclerViewListener {
+                override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+                    setSpanSizeLookup4Grid(recyclerView)
+                }
+
+                override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+                }
+            })
+            contentAdapter.addOnAttachWindowListener(object : AttachToWindowListener {
+                override fun onAttachedToWindow(holder: ViewHolder) {
+                    setSpanSizeLookup4StaggeredGrid(holder)
+                }
+
+                override fun onDetachedFromWindow(holder: ViewHolder) {
+                }
+            })
+        }
     }
 
     private fun setSpanSizeLookup4Grid(recyclerView: RecyclerView) {
@@ -177,6 +167,7 @@ class SlimAdapterHelper<T>(
         val headerSize = headerAdapter?.itemCount ?: 0
         val emptySize = emptyAdapter?.itemCount ?: 0
         val footerSize = footerAdapter?.itemCount ?: 0
+        val loadMoreSize = loadMoreAdapter?.itemCount ?: 0
 
         val totalSize = realAdapter.itemCount
 
@@ -190,6 +181,10 @@ class SlimAdapterHelper<T>(
         }
         if (footerSize != 0 && index in (totalSize - footerSize) until totalSize) {
             // footer
+            return true
+        }
+        if (loadMoreSize != 0 && index in (totalSize - loadMoreSize) until totalSize) {
+            // loadMore
             return true
         }
 
@@ -226,8 +221,26 @@ class SlimAdapterHelper<T>(
         return this
     }
 
-    private fun ConcatAdapter.enableLoadMore(loader: MoreLoader): ConcatAdapter {
-        return addFooter(loader.loadMoreFooterView)
+    private fun ConcatAdapter.emptyView(emptyView: View?): ConcatAdapter {
+        emptyView?.let {
+            emptyAdapter = EmptyAdapter(emptyView)
+            val emptyIndex = if (headers.isNullOrEmpty()) 0 else 1
+            addAdapter(emptyIndex, emptyAdapter!!)
+        }
+        return this
+    }
+
+    private fun ConcatAdapter.enableLoadMore(loader: MoreLoader?): ConcatAdapter {
+        loader?.let {
+            loadMoreAdapter = LoadMoreAdapter(it)
+            addAdapter(loadMoreAdapter!!)
+
+            contentAdapter.addOnAttachRecyclerViewListener(loader)
+            loader.setItemCountCallback {
+                return@setItemCountCallback realAdapter.itemCount
+            }
+        }
+        return this
     }
 
 }

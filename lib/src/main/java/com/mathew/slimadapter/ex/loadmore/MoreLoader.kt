@@ -22,14 +22,9 @@ open class MoreLoader(
 
     @Volatile
     var enable = true
-        set(value) {
-            field = value
-            mLoadMoreFooter.status = if (value) ILoadMoreFooter.Status.COMPLETED
-            else ILoadMoreFooter.Status.DISABLE
-        }
 
     @Volatile
-    var isEmpty = true
+    var isContentEmpty = true
 
     private var itemCountCallback: (() -> Int)? = null
     private var recyclerView: WeakReference<RecyclerView>? = null
@@ -76,7 +71,7 @@ open class MoreLoader(
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
-        if (!enable || isEmpty) {
+        if (!enable || isContentEmpty) {
             return
         }
         when (newState) {

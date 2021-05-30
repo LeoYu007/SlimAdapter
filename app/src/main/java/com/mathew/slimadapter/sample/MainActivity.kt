@@ -5,15 +5,12 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.mathew.slimadapter.SlimAdapter
-import com.mathew.slimadapter.ex.SlimAdapterHelper
+import com.mathew.slimadapter.ex.SlimAdapterWrapper
 import com.mathew.slimadapter.core.ViewHolder
-import com.mathew.slimadapter.ex.loadmore.DefaultLoadMoreFooter
-import com.mathew.slimadapter.ex.loadmore.LoadMoreListener
-import com.mathew.slimadapter.ex.loadmore.MoreLoader
 import com.mathew.slimadapter.sample.entity.OnePiece
 
 class MainActivity : BaseActivity() {
-    private lateinit var adapterHelper: SlimAdapterHelper<OnePiece>
+    private lateinit var adapterHelper: SlimAdapterWrapper<OnePiece>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,22 +51,21 @@ class MainActivity : BaseActivity() {
         val header1 = View.inflate(this, R.layout.item_header, null)
         val header2 = View.inflate(this, R.layout.item_header, null)
         val footer = View.inflate(this, R.layout.item_footer, null)
-        val footer2 = View.inflate(this, R.layout.item_footer, null)
 
         // footer和loadMore不能同时出现，会有冲突
-        adapterHelper = SlimAdapterHelper(
+        adapterHelper = SlimAdapterWrapper(
             slimAdapter,
-//            headers = arrayOf(header1, header2),
-//            footers = arrayOf(footer, footer2),
+            headers = arrayOf(header1, header2),
+            footers = arrayOf(footer),
             emptyView = empty,
-            moreLoader = MoreLoader(object : LoadMoreListener {
-                override fun onLoadMore() {
-                    loadMore()
-                }
-            }, DefaultLoadMoreFooter(this))
+//            moreLoader = MoreLoader(object : LoadMoreListener {
+//                override fun onLoadMore() {
+//                    loadMore()
+//                }
+//            }, DefaultLoadMoreFooter(this))
         )
 
-        return adapterHelper.build()
+        return adapterHelper.create()
     }
 
     private fun loadMore() {

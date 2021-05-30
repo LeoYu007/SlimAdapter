@@ -87,9 +87,6 @@ class DefaultLoadMoreFooter : LinearLayout, ILoadMoreFooter {
                     mText!!.text = str_error
                     mProgressBar!!.visibility = View.GONE
                 }
-                ILoadMoreFooter.Status.DISABLE -> {
-                    this.visibility = View.GONE
-                }
             }
         }
 }

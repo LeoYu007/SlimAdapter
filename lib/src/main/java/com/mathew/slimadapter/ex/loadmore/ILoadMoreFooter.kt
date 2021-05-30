@@ -9,7 +9,7 @@ import android.view.View
 interface ILoadMoreFooter {
 
     enum class Status {
-        LOADING, COMPLETED, NO_MORE, ERROR, DISABLE
+        LOADING, COMPLETED, NO_MORE, ERROR
     }
 
     var status: Status
