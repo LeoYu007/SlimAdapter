@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mathew.slimadapter.core.*
+import com.mathew.slimadapter.databinding.DataBindingInjector
 import com.mathew.slimadapter.databinding.DataBindingViewHolder
 import com.mathew.slimadapter.diff.DefaultDiffCallback
 import com.mathew.slimadapter.diff.SlimDiffUtil
