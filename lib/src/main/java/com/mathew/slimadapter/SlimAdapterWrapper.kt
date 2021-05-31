@@ -24,12 +24,12 @@ import com.mathew.slimadapter.ex.loadmore.MoreLoader
  *
  * @author mathew
  * @date 2021/5/31
- * @description SlimAdapterEx，为普通的adapter增加扩展功能，包括empty、loadMore、header、footer
+ * @description SlimAdapterWrapper，为普通的adapter增加扩展功能，包括empty、loadMore、header、footer
  */
-open class SlimAdapterEx<T>(
+open class SlimAdapterWrapper<T>(
     private val context: Context,
     private val contentAdapter: SlimAdapter<T>
-) :/* RecyclerView.Adapter<RecyclerView.ViewHolder>(), */DataOperator<T> by contentAdapter {
+) : DataOperator<T> by contentAdapter {
 
     // 这个是真正的adapter，管理所有子adapter
     private val realAdapter = ConcatAdapter()
@@ -43,22 +43,6 @@ open class SlimAdapterEx<T>(
     }
 
     fun getAdapter(): ConcatAdapter = realAdapter
-
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        return realAdapter.onCreateViewHolder(parent, viewType)
-//    }
-//
-//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        realAdapter.onBindViewHolder(holder, position)
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return realAdapter.itemCount
-//    }
-//
-//    override fun getItemViewType(position: Int): Int {
-//        return realAdapter.getItemViewType(position)
-//    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     private var isDataObserverRegister = false

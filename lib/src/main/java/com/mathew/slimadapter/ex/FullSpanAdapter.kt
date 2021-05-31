@@ -60,7 +60,7 @@ class LoadMoreAdapter(private val moreLoader: MoreLoader) : FullSpanAdapter() {
     fun enable(enable: Boolean) {
         moreLoader.enable = enable
         if (enable) {
-            updateData(listOf(moreLoader.loadMoreFooterView))
+            setNewData(listOf(moreLoader.loadMoreFooterView))
         } else {
             clear()
         }
@@ -90,7 +90,7 @@ class LoadMoreAdapter(private val moreLoader: MoreLoader) : FullSpanAdapter() {
 class EmptyAdapter(private val emptyView: View) : FullSpanAdapter() {
 
     fun show() {
-        updateData(listOf(emptyView))
+        setNewData(listOf(emptyView))
     }
 
     fun hide() {

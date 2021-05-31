@@ -33,7 +33,7 @@ abstract class AbsAdapter<T> : RecyclerView.Adapter<ViewHolder>(), DataOperator<
         return mDataSet.size
     }
 
-    override fun updateData(items: List<T>) {
+    override fun setNewData(items: List<T>) {
         if (diffCallback != null && mDataSet.isNotEmpty()) {
             val diffResult = DiffUtil.calculateDiff(SlimDiffUtil(mDataSet, items, diffCallback!!))
             mDataSet = ArrayList(items)
@@ -93,7 +93,7 @@ abstract class AbsAdapter<T> : RecyclerView.Adapter<ViewHolder>(), DataOperator<
         notifyItemChanged(index)
     }
 
-    fun refreshData(autoNotify: Boolean = true, block: (MutableList<T>) -> Unit) {
+    override fun refreshDataSet(autoNotify: Boolean, block: (MutableList<T>) -> Unit) {
         block(mDataSet)
         if (autoNotify) {
             notifyDataSetChanged()

@@ -12,8 +12,8 @@ open class RadioAdapter<T : SelectableItem> : SlimAdapter<T>() {
     var checkedItem: T? = null
         private set
 
-    override fun updateData(items: List<T>) {
-        super.updateData(items)
+    override fun setNewData(items: List<T>) {
+        super.setNewData(items)
         checkedItem = items.find { it.isSelected }
     }
 

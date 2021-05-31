@@ -18,6 +18,7 @@ import com.mathew.slimadapter.core.ViewHolder
  * 为了一个普通的adapter增加 header、footer、empty、loadMore的功能
  * 实际上是构建了一个ConcatAdapter，header、footer、empty分别是3个不同的子adapter
  */
+@Deprecated("SlimAdapterWrapper")
 class SlimAdapterWrapper<T>(
     val contentAdapter: SlimAdapter<T>,
     private val headers: Array<View>? = null,
