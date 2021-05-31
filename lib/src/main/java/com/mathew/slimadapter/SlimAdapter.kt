@@ -2,6 +2,7 @@ package com.mathew.slimadapter
 
 import android.util.SparseArray
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.util.isNotEmpty
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mathew.slimadapter.core.*
+import com.mathew.slimadapter.databinding.DataBindingViewHolder
 import com.mathew.slimadapter.diff.DefaultDiffCallback
 import com.mathew.slimadapter.diff.SlimDiffUtil
 
@@ -70,11 +72,19 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // 这里viewType就是layoutId
         val itemView = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        val holder = ViewHolder(itemView)
+        val holder = createViewHolder(itemView, viewInjectors[viewType])
 
         setupItemClickListener(holder)
         setupItemLongClickListener(holder)
         return holder
+    }
+
+    protected open fun createViewHolder(itemView: View, injector: ViewInjector<*>): ViewHolder {
+        return if (injector is DataBindingInjector<*>) {
+            DataBindingViewHolder(itemView)
+        } else {
+            ViewHolder(itemView)
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
