@@ -34,8 +34,8 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
      * key: viewType (实际上直接使用的layoutId作为viewType)    value: [ViewInjector]
      */
     private val viewInjectors by lazy { SparseArray<ViewInjector<T>>() }
-    private var onItemClickListener: OnItemClickListener? = null
-    private var onItemLongClickListener: OnItemLongClickListener? = null
+    private var onItemClickListener: OnItemClickListener<T>? = null
+    private var onItemLongClickListener: OnItemLongClickListener<T>? = null
     private var injectorFinder: InjectorFinder? = null
     private val attachRecyclerViewListener by lazy { arrayListOf<AttachToRecyclerViewListener>() }
     private val attachWindowListener by lazy { arrayListOf<AttachToWindowListener>() }
@@ -90,14 +90,14 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
     private fun setupItemClickListener(viewHolder: ViewHolder) {
         viewHolder.itemView.setOnClickListener {
             val position = viewHolder.bindingAdapterPosition
-            onItemClickListener?.invoke(position, mDataSet[position] as Any)
+            onItemClickListener?.invoke(position, mDataSet[position])
         }
     }
 
     private fun setupItemLongClickListener(viewHolder: ViewHolder) {
         viewHolder.itemView.setOnLongClickListener {
             val position = viewHolder.bindingAdapterPosition
-            onItemLongClickListener?.invoke(position, mDataSet[position] as Any)
+            onItemLongClickListener?.invoke(position, mDataSet[position])
             true
         }
     }
@@ -162,11 +162,11 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
         }
     }
 
-    fun itemClickListener(listener: OnItemClickListener) {
+    fun itemClickListener(listener: OnItemClickListener<T>) {
         this.onItemClickListener = listener
     }
 
-    fun itemLongClickListener(listener: OnItemLongClickListener) {
+    fun itemLongClickListener(listener: OnItemLongClickListener<T>) {
         this.onItemLongClickListener = listener
     }
 

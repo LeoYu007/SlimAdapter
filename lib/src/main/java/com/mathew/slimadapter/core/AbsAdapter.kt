@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mathew.slimadapter.diff.SlimDiffUtil
 
 
-typealias OnItemClickListener = (index: Int, item: Any) -> Unit
-typealias OnItemLongClickListener = (index: Int, item: Any) -> Unit
+typealias OnItemClickListener<T> = (index: Int, item: T) -> Unit
+typealias OnItemLongClickListener<T> = (index: Int, item: T) -> Unit
 
 /**
  * @author yu
