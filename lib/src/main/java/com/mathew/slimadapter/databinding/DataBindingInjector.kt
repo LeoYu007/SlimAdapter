@@ -1,5 +1,6 @@
 package com.mathew.slimadapter.databinding
 
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.mathew.slimadapter.core.ViewHolder
 import com.mathew.slimadapter.core.ViewInjector
@@ -11,12 +12,11 @@ import com.mathew.slimadapter.core.ViewInjector
  * @date 2021/5/31
  * @description DataBindingInjector
  */
-open class DataBindingInjector<T>(layoutId: Int, private val variableId: Int) :
+open class DataBindingInjector<T, B : ViewDataBinding>(layoutId: Int, private val variableId: Int) :
     ViewInjector<T>(layoutId) {
 
     override fun bind(holder: ViewHolder, item: T, position: Int) {
-        val dViewHolder = holder as DataBindingViewHolder
-        val binding = dViewHolder.binding
+        val binding = DataBindingUtil.bind<B>(holder.itemView)
         if (binding != null) {
             if (variableId > 0) {
                 binding.setVariable(variableId, item)
@@ -26,7 +26,7 @@ open class DataBindingInjector<T>(layoutId: Int, private val variableId: Int) :
         }
     }
 
-    open fun onBind(binding: ViewDataBinding, item: T, position: Int) {
+    open fun onBind(binding: B, item: T, position: Int) {
 
     }
 }

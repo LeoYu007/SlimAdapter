@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.util.isNotEmpty
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mathew.slimadapter.core.*
 import com.mathew.slimadapter.databinding.DataBindingInjector
-import com.mathew.slimadapter.databinding.DataBindingViewHolder
 import com.mathew.slimadapter.diff.DefaultDiffCallback
 import com.mathew.slimadapter.diff.SlimDiffUtil
 
@@ -81,11 +79,7 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
     }
 
     protected open fun createViewHolder(itemView: View, injector: ViewInjector<*>): ViewHolder {
-        return if (injector is DataBindingInjector<*>) {
-            DataBindingViewHolder(itemView)
-        } else {
-            ViewHolder(itemView)
-        }
+        return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -159,6 +153,24 @@ open class SlimAdapter<T> : AbsAdapter<T>() {
                 block.invoke(holder, item, position)
             }
         })
+    }
+
+    fun <B : ViewDataBinding> registerDataBind(
+        @LayoutRes layoutId: Int,
+        block: (binding: B, item: T, position: Int) -> Unit
+    ) {
+        register(object : DataBindingInjector<T, B>(layoutId, 0) {
+            override fun onBind(binding: B, item: T, position: Int) {
+                block(binding, item, position)
+            }
+        })
+    }
+
+    fun <B : ViewDataBinding> registerDataBind(
+        @LayoutRes layoutId: Int,
+        variableId: Int
+    ) {
+        register(DataBindingInjector<T, B>(layoutId, variableId))
     }
 
     fun injectorFinder(finder: InjectorFinder) {
