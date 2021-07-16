@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mathew.slimadapter.core.DataOperator
 import com.mathew.slimadapter.core.ViewHolder
-import com.mathew.slimadapter.ex.EmptyAdapter
-import com.mathew.slimadapter.ex.FooterAdapter
-import com.mathew.slimadapter.ex.HeaderAdapter
-import com.mathew.slimadapter.ex.LoadMoreAdapter
+import com.mathew.slimadapter.ex.*
 import com.mathew.slimadapter.ex.loadmore.DefaultLoadMoreFooter
 import com.mathew.slimadapter.ex.loadmore.ILoadMoreFooter
 import com.mathew.slimadapter.ex.loadmore.LoadMoreListener
@@ -198,6 +195,7 @@ open class SlimAdapterWrapper<T>(
 
     fun emptyView(
         view: View,
+        errorView: View? = null,
         layoutParams: ViewGroup.LayoutParams =
             ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -206,8 +204,9 @@ open class SlimAdapterWrapper<T>(
     ) {
         if (emptyAdapter == null) {
             view.layoutParams = layoutParams
+            errorView?.layoutParams = layoutParams
 
-            emptyAdapter = EmptyAdapter(view)
+            emptyAdapter = EmptyAdapter(view, errorView)
             val emptyIndex = if (headerAdapter == null) 0 else 1
             realAdapter.addAdapter(emptyIndex, emptyAdapter!!)
 
@@ -243,6 +242,14 @@ open class SlimAdapterWrapper<T>(
 
             initFullSpanCallback()
         }
+    }
+
+    fun showErrorView(block: ((View) -> Unit)? = null) {
+        emptyAdapter?.showError(block)
+    }
+
+    fun hideErrorView() {
+        emptyAdapter?.hide()
     }
 
     fun loadMoreEnable(enable: Boolean) {
