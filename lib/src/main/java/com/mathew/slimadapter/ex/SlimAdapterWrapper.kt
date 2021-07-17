@@ -1,4 +1,4 @@
-package com.mathew.slimadapter
+package com.mathew.slimadapter.ex
 
 import android.content.Context
 import android.util.Log
@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.mathew.slimadapter.AttachToRecyclerViewListener
+import com.mathew.slimadapter.AttachToWindowListener
+import com.mathew.slimadapter.SlimAdapter
 import com.mathew.slimadapter.core.DataOperator
 import com.mathew.slimadapter.core.ViewHolder
 import com.mathew.slimadapter.ex.*
@@ -245,6 +248,7 @@ open class SlimAdapterWrapper<T>(
     }
 
     fun showErrorView(block: ((View) -> Unit)? = null) {
+        contentAdapter.clear()
         emptyAdapter?.showError(block)
     }
 

@@ -56,7 +56,7 @@ open class MoreLoader(
         recyclerView.postDelayed({
             val itemCount = itemCountCallback?.invoke() ?: return@postDelayed
             val index = SlimUtil.findLastCompletelyVisibleItemPosition(manager)
-            enable = index + 1 != itemCount
+            enable = index + 1 > itemCount
         }, 100)
     }
 

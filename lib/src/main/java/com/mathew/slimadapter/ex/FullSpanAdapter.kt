@@ -1,6 +1,5 @@
 package com.mathew.slimadapter.ex
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.mathew.slimadapter.core.AbsAdapter
 import com.mathew.slimadapter.core.ViewHolder
-import com.mathew.slimadapter.ex.loadmore.MoreLoader
 import com.mathew.slimadapter.util.SlimUtil
 
 
@@ -48,62 +46,4 @@ open class FullSpanAdapter : AbsAdapter<View>() {
         }
     }
 
-}
-
-class HeaderAdapter : FullSpanAdapter()
-class FooterAdapter : FullSpanAdapter()
-class LoadMoreAdapter(private val moreLoader: MoreLoader) : FullSpanAdapter() {
-    init {
-        moreLoader.enable = true
-        addData(moreLoader.loadMoreFooterView)
-    }
-
-    fun enable(enable: Boolean) {
-        moreLoader.enable = enable
-        if (enable) {
-            setNewData(listOf(moreLoader.loadMoreFooterView))
-        } else {
-            clear()
-        }
-    }
-
-    fun completed() {
-        moreLoader.loadMoreCompleted()
-    }
-
-    fun error() {
-        moreLoader.loadMoreError()
-    }
-
-    fun noMore() {
-        moreLoader.noMore()
-    }
-
-    fun disableLoadMoreIfNotFullPage() {
-        moreLoader.disableIfNotFullPage()
-    }
-
-    fun setContentEmpty(empty: Boolean) {
-        moreLoader.isContentEmpty = empty
-    }
-}
-
-class EmptyAdapter(private val emptyView: View, private var errorView: View?) : FullSpanAdapter() {
-
-    fun show() {
-        setNewData(listOf(emptyView))
-    }
-
-    fun showError(block: ((View) -> Unit)? = null) {
-        errorView?.let {
-            block?.invoke(it)
-            setNewData(listOf(it))
-        } ?: kotlin.run {
-            Log.w("EmptyAdapter", "error view is null")
-        }
-    }
-
-    fun hide() {
-        clear()
-    }
 }

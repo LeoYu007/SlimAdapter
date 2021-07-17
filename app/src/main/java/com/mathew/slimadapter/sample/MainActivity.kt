@@ -5,9 +5,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.mathew.slimadapter.SlimAdapter
-import com.mathew.slimadapter.SlimAdapterWrapper
+import com.mathew.slimadapter.ex.SlimAdapterWrapper
 import com.mathew.slimadapter.core.ViewHolder
 import com.mathew.slimadapter.ex.loadmore.LoadMoreListener
+import com.mathew.slimadapter.exWrapper
 import com.mathew.slimadapter.sample.entity.OnePiece
 
 class MainActivity : BaseActivity() {
@@ -55,8 +56,7 @@ class MainActivity : BaseActivity() {
         val header2 = View.inflate(this, R.layout.item_header, null)
         val footer = View.inflate(this, R.layout.item_footer, null)
 
-
-        wrapper = SlimAdapterWrapper(this, slimAdapter).apply {
+        wrapper = slimAdapter.exWrapper(this) {
             addHeader(header1)
             addHeader(header2)
 //            addFooter(footer)

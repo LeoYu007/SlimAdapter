@@ -1,5 +1,7 @@
 package com.mathew.slimadapter
 
+import com.mathew.slimadapter.ex.SlimAdapterWrapper
+
 /**
  * Copyright (c) 2021 $ All rights reserved.
  *
