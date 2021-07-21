@@ -1,40 +1,78 @@
 ### 一个简单的adapter封装库,fully write in kotlin
 
+- multi item type
 - header/footer
-- empty view
+- empty/error view
 - auto load more
 - auto diff
 
 ### usage
 
+#### 简单使用
 ```kotlin
-// 简单使用
- val slimAdapter = SlimAdapter<OnePiece>().apply {
-            // 每注册一个viewInjector代表一种viewType
-            register(R.layout.item_normal) { holder, item, _ ->
-                bindData2View(holder, item)
-            }
-            register(R.layout.item_big) { holder, item, _ ->
-                bindData2View(holder, item)
-            }
+   val adapter = SlimAdapter<String>().apply {
+        // 每注册一个viewInjector代表一种viewType
+        register(R.layout.item_normal) { holder, item, _ ->
+            bindData2View(holder, item)
+        }
+        // 也支持DataBinding
+        registerDataBind(R.layout.item_big, BR.item)
 
-            // 多itemType必须设置injectorFinder
-            injectorFinder { item, _, _ ->
-                if ((item as OnePiece).isBigType) R.layout.item_big else R.layout.item_normal
-            }
-
-            itemClickListener { index, _ ->
-                showToast("click position : $index")
-            }
-            itemLongClickListener { index, _ ->
-                remove(index)
-            }
-
-            autoDiff()
+        // 如果是多itemType必须设置injectorFinder
+        // 根据item返回viewType（实际上adapter内部viewType就是布局的layoutId，所以直接返回layoutId就行）
+        injectorFinder { item, _, _ ->
+            if ((item as OnePiece).isBigType) R.layout.item_big else R.layout.item_normal
         }
 
+        itemClickListener { index, _ ->
+            showToast("click position : $index")
+        }
+        itemLongClickListener { index, _ ->
+            remove(index)
+        }
+
+        // diff
+        autoDiff()
+   }
+
+   recyclerView.adapter = adapter
 ```
-#### 更新数据的接口，SlimAdapter和扩展的SlimAdapterWrapper都实现了此接口用来更新数据
+#### 高级功能
+
+- 包含功能：header、footer、empty（error实际上也是一种特殊的empty）和load more
+- 此功能是采用ConcatAdapter实现，各功能分别是单独的adapter，互不影响，也不影响内容adapter。
+- 由于ConcatAdapter是final的，所以只能采用包装的方式来做多adapter的管理，返回一个SlimAdapterWrapper对象
+
+```kotlin
+
+    // 内容adapter
+    val slimAdapter = ...
+
+    // 通过SlimAdapterWrapper扩展，header、footer、empty和load more功能
+    val wrapper = slimAdapter.exWrapper(context) {
+
+        addHeader(header1)
+        addHeader(header2)
+        // footer和load more不能同时存在
+        // addFooter(footer)
+
+        // empty将自动触发，不需要手动显示，errorView显示可以手动使用wrapper.showErrorView显示
+        emptyView(empty, errorView)
+
+        // enableLoadMore时可以传入自定义footer
+        enableLoadMore(object : LoadMoreListener {
+            override fun onLoadMore() {
+                loadMore()
+            }
+        })
+    }
+
+    recyclerView.adapter = wrapper.getAdapter()
+
+```
+### 重要： SlimAdapter和扩展的SlimAdapterWrapper都实现了DataOperator接口用来更新数据，如使用了高级功能，请直接使用SlimAdapterWrapper来更新数据
+
+#### DataOperator接口参考
 ```kotlin
 interface DataOperator<T> {
     fun getItem(index: Int): T
@@ -49,33 +87,3 @@ interface DataOperator<T> {
     fun refreshDataSet(autoNotify: Boolean = true, block: (MutableList<T>) -> Unit)
     fun clear()
 }
-```
-#### 扩展功能
-- 此功能是采用ConcatAdapter实现，header、footer、empty和load more分别是单独的adapter，互不影响，也不影响内容adapter。
-- 由于ConcatAdapter是final的，所以只能采用包装的方式来做多adapter的管理，使用方法如下：
-```kotlin
-
-        // 内容adapter
-        val slimAdapter = ...
-
-        val empty = View.inflate(this, R.layout.empty_view, null)
-        val header1 = View.inflate(this, R.layout.item_header, null)
-        val header2 = View.inflate(this, R.layout.item_header, null)
-        val footer = View.inflate(this, R.layout.item_footer, null)
-
-        // 通过SlimAdapterWrapper扩展，header、footer、empty和load more功能
-        val wrapper = SlimAdapterWrapper(this, slimAdapter).apply {
-            addHeader(header1)
-            addHeader(header2)
-            // footer和load more不能同时存在
-//            addFooter(footer)
-            emptyView(empty)
-            enableLoadMore(object : LoadMoreListener {
-                override fun onLoadMore() {
-                    loadMore()
-                }
-            })
-        }
-
-        recyclerView.adapter = wrapper.getAdapter()
-```

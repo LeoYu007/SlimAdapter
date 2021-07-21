@@ -53,3 +53,31 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
 }
+
+// 发布脚本
+apply plugin: 'maven'
+
+def NEXUS_URL = "http://xxx/nexus/content/repositories/maven-releases"
+def SNAPSHOT_URL = "http://xxx/nexus/content/repositories/snapshots"
+def NEXUS_USERNAME = "xxx"
+def NEXUS_PASSWORD = "xxx"
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                snapshotRepository(url: SNAPSHOT_URL) {
+                    authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+                }
+                repository(url: NEXUS_URL) {
+                    authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+                }
+                pom.project {
+                    groupId "com.xxx.xxx"
+                    artifactId 'xxx'
+//                    version '1.0.0'
+                    version '1.0.0-SNAPSHOT'
+                }
+            }
+        }
+    }
+}
